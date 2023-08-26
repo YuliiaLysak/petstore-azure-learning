@@ -119,6 +119,11 @@ public class PetStoreServiceImpl implements PetStoreService {
 
 	@Override
 	public Collection<Product> getProducts(String category, List<Tag> tags) {
+		sessionUser.getTelemetryClient().trackEvent(
+			String.format("PetStoreApp user %s is requesting products list", this.sessionUser.getName()),
+			this.sessionUser.getCustomEventProperties(),
+			null
+		);
 		List<Product> products = new ArrayList<>();
 
 		try {
@@ -148,6 +153,9 @@ public class PetStoreServiceImpl implements PetStoreService {
 				products = products.stream().filter(product -> category.equals(product.getCategory().getName())
 						&& product.getTags().toString().contains("small")).collect(Collectors.toList());
 			}
+
+			logger.info("Number of items that were returned to user = [{}]", products.size());
+			sessionUser.getTelemetryClient().trackMetric("products number", products.size());
 			return products;
 		} catch (
 
