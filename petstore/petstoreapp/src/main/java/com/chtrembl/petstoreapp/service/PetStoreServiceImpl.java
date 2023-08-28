@@ -9,6 +9,7 @@ import com.chtrembl.petstoreapp.model.ContainerEnvironment;
 import com.chtrembl.petstoreapp.model.Order;
 import com.chtrembl.petstoreapp.model.Pet;
 import com.chtrembl.petstoreapp.model.Product;
+import com.chtrembl.petstoreapp.model.FunctionResponse;
 import com.chtrembl.petstoreapp.model.Tag;
 import com.chtrembl.petstoreapp.model.User;
 import com.chtrembl.petstoreapp.model.WebRequest;
@@ -20,7 +21,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -45,6 +45,7 @@ public class PetStoreServiceImpl implements PetStoreService {
 	private WebClient petServiceWebClient = null;
 	private WebClient productServiceWebClient = null;
 	private WebClient orderServiceWebClient = null;
+	private WebClient reserveItemsServiceWebClient = null;
 
 	public PetStoreServiceImpl(User sessionUser, ContainerEnvironment containerEnvironment, WebRequest webRequest) {
 		this.sessionUser = sessionUser;
@@ -58,8 +59,13 @@ public class PetStoreServiceImpl implements PetStoreService {
 				.baseUrl(this.containerEnvironment.getPetStorePetServiceURL())
 				.build();
 		this.productServiceWebClient = WebClient.builder()
-				.baseUrl(this.containerEnvironment.getPetStoreProductServiceURL()).build();
-		this.orderServiceWebClient = WebClient.builder().baseUrl(this.containerEnvironment.getPetStoreOrderServiceURL())
+				.baseUrl(this.containerEnvironment.getPetStoreProductServiceURL())
+				.build();
+		this.orderServiceWebClient = WebClient.builder()
+				.baseUrl(this.containerEnvironment.getPetStoreOrderServiceURL())
+				.build();
+		this.reserveItemsServiceWebClient = WebClient.builder()
+				.baseUrl(this.containerEnvironment.getPetStoreOrderItemsReserverURL())
 				.build();
 	}
 
@@ -207,9 +213,11 @@ public class PetStoreServiceImpl implements PetStoreService {
 				updatedOrder.setProducts(products);
 			}
 
-			String orderJSON = new ObjectMapper().setSerializationInclusion(Include.NON_NULL)
-					.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
-					.configure(SerializationFeature.FAIL_ON_SELF_REFERENCES, false).writeValueAsString(updatedOrder);
+			ObjectMapper objectMapper = new ObjectMapper()
+				.setSerializationInclusion(Include.NON_NULL)
+				.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
+				.configure(SerializationFeature.FAIL_ON_SELF_REFERENCES, false);
+			String orderJSON = objectMapper.writeValueAsString(updatedOrder);
 
 			Consumer<HttpHeaders> consumer = it -> it.addAll(this.webRequest.getHeaders());
 
@@ -222,6 +230,30 @@ public class PetStoreServiceImpl implements PetStoreService {
 					.retrieve()
 					.bodyToMono(Order.class).block();
 
+			String updatedOrderJSON = objectMapper.writeValueAsString(updatedOrder);
+
+			FunctionResponse functionResponse = reserveItemsServiceWebClient.post()
+				.uri("api/reserve-order-items")
+				.body(BodyInserters.fromPublisher(Mono.just(updatedOrderJSON), String.class))
+				.accept(MediaType.APPLICATION_JSON)
+				.headers(consumer)
+				.header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+				.header("Cache-Control", "no-cache")
+				.retrieve()
+				.bodyToMono(FunctionResponse.class)
+				.block();
+
+			logger.info(
+				"Function call response - [{}]",
+				functionResponse == null ? null : functionResponse.getStatus()
+			);
+
+			this.sessionUser.getTelemetryClient()
+				.trackEvent(
+					String.format("User [%s-%s] triggered Function App", this.sessionUser.getName(), sessionUser.getSessionId()),
+					this.sessionUser.getCustomEventProperties(),
+					null
+				);
 		} catch (Exception e) {
 			logger.warn(e.getMessage());
 		}
