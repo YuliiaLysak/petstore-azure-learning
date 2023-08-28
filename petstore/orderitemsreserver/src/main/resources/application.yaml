@@ -1,0 +1,13 @@
+server:
+  port: ${PETSTORE_ORDER_ITEMS_RESERVER_SERVER_PORT:8084}
+
+spring:
+  application:
+    name: orderitemsreserver
+
+  cloud:
+    azure:
+      storage:
+        blob:
+          account-name: ${AZURE_STORAGE_ACCOUNT:petstorestorage}
+          container-name: ${STORAGE_CONTAINER_NAME:reserved-order-items}

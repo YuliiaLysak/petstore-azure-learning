@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.1.3</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+
+    <groupId>com.chtrembl.petstoreapp</groupId>
+    <artifactId>orderitemsreserver</artifactId>
+    <packaging>jar</packaging>
+    <name>orderitemsreserver</name>
+    <version>0.0.1-SNAPSHOT</version>
+
+    <properties>
+        <java.version>17</java.version>
+        <spring-boot.version>3.1.3</spring-boot.version>
+
+        <!-- AZURE FUNCTION CONFIG -->
+        <azure.functions.maven.plugin.version>1.26.0</azure.functions.maven.plugin.version>
+        <azure.functions.java.library.version>3.0.0</azure.functions.java.library.version>
+        <spring.cloud.function.dependencies>4.0.3</spring.cloud.function.dependencies>
+        <spring-cloud-azure-dependencies.version>5.4.0</spring-cloud-azure-dependencies.version>
+
+        <start-class>com.chtrembl.orderitemsreserver.FunctionApplication</start-class>
+        <functionAppName>petstore-reserve-order-items</functionAppName>
+        <functionAppRegion>eastus</functionAppRegion>
+        <functionResourceGroup>learn-azure-temporal</functionResourceGroup>
+        <functionAppServicePlanName>learn-azure-function-plan</functionAppServicePlanName>
+        <functionPricingTier>EP1</functionPricingTier>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-function-adapter-azure</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.azure.spring</groupId>
+            <artifactId>spring-cloud-azure-starter-storage-blob</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.28</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-function-dependencies</artifactId>
+                <version>${spring.cloud.function.dependencies}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>com.azure.spring</groupId>
+                <artifactId>spring-cloud-azure-dependencies</artifactId>
+                <version>${spring-cloud-azure-dependencies.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>com.microsoft.azure.functions</groupId>
+                <artifactId>azure-functions-java-library</artifactId>
+                <version>${azure.functions.java.library.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+<!--                <version>3.11.0</version>-->
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>com.microsoft.azure</groupId>
+                <artifactId>azure-functions-maven-plugin</artifactId>
+                <version>${azure.functions.maven.plugin.version}</version>
+                <configuration>
+                    <appName>${functionAppName}</appName>
+                    <resourceGroup>${functionResourceGroup}</resourceGroup>
+                    <region>${functionAppRegion}</region>
+                    <appServicePlanName>${functionAppServicePlanName}</appServicePlanName>
+                    <pricingTier>${functionPricingTier}</pricingTier>
+
+                    <hostJson>${project.basedir}/src/main/resources/host.json</hostJson>
+                    <localSettingsJson>${project.basedir}/src/main/resources/local.settings.json</localSettingsJson>
+
+                    <runtime>
+                        <os>linux</os>
+                        <javaVersion>${java.version}</javaVersion>
+                    </runtime>
+
+                    <appSettings>
+                        <property>
+                            <name>FUNCTIONS_EXTENSION_VERSION</name>
+                            <value>~4</value>
+                        </property>
+                        <property>
+                            <name>MAIN_CLASS</name>
+                            <value>com.chtrembl.orderitemsreserver.FunctionApplication</value>
+                        </property>
+                    </appSettings>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>package-functions</id>
+                        <goals>
+                            <goal>package</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
