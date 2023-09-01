@@ -7,6 +7,9 @@ import java.util.Objects;
 
 import javax.validation.Valid;
 
+import com.azure.spring.data.cosmos.core.mapping.Container;
+import com.azure.spring.data.cosmos.core.mapping.PartitionKey;
+import org.springframework.data.annotation.Id;
 import org.springframework.validation.annotation.Validated;
 import org.threeten.bp.OffsetDateTime;
 
@@ -22,23 +25,25 @@ import io.swagger.annotations.ApiModelProperty;
 @Validated
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2021-12-23T15:16:30.446-05:00")
 
+@Container(containerName = "orders")
 public class Order implements Serializable {
-	@JsonProperty("id")
-	private String id = null;
 
-	@JsonProperty("email")
-	private String email = null;
+	@Id
+	private String id;
+
+	@PartitionKey
+	private String email;
 
 	@JsonProperty("products")
 	@Valid
-	private List<Product> products = null;
+	private List<Product> products;
 
 	@JsonProperty("shipDate")
-	private OffsetDateTime shipDate = null;
+	private OffsetDateTime shipDate;
 
 	@JsonProperty("tags")
 	@Valid
-	private List<Tag> tags = null;
+	private List<Tag> tags;
 
 	/**
 	 * Order Status
@@ -74,10 +79,10 @@ public class Order implements Serializable {
 	}
 
 	@JsonProperty("status")
-	private StatusEnum status = null;
+	private StatusEnum status;
 
 	@JsonProperty("complete")
-	private Boolean complete = null;
+	private Boolean complete;
 
 	public Order id(String id) {
 		this.id = id;

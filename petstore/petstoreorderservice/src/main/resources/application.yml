@@ -18,6 +18,13 @@ spring:
     pathmatch:
       matching-strategy: ant_path_matcher
 
+  cloud:
+    azure:
+      cosmos:
+        endpoint: ${COSMOS_DB_ENDPOINT}
+        key: ${COSMOS_DB_KEY}
+        database: ${COSMOS_DB_DATABASE}
+
 management:
   endpoints:
     web:

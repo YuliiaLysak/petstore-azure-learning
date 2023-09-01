@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.List;
 
+import io.swagger.service.OrderService;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.slf4j.Logger;
@@ -48,6 +49,9 @@ public class StoreApiCache {
 	@Qualifier(value = "cacheManager")
 	private CacheManager cacheManager;
 
+	@Autowired
+	private OrderService orderService;
+
 	@org.springframework.beans.factory.annotation.Autowired
 	public StoreApiCache(ObjectMapper objectMapper) {
 		this.objectMapper = objectMapper;
@@ -56,7 +60,7 @@ public class StoreApiCache {
 	@Cacheable("orders")
 	public Order getOrder(String id) {
 		log.info(String.format("PetStoreOrderService creating new order id:%s and caching it", id));
-		return new Order();
+		return orderService.get(id);
 	}
 
 	@Cacheable("orders")
