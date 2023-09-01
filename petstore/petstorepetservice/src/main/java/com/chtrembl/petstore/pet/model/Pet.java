@@ -1,19 +1,28 @@
 package com.chtrembl.petstore.pet.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+import io.swagger.annotations.ApiModelProperty;
+import org.springframework.validation.annotation.Validated;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-
-import org.springframework.validation.annotation.Validated;
-
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonValue;
-
-import io.swagger.annotations.ApiModelProperty;
 
 /**
  * Pet
@@ -21,23 +30,52 @@ import io.swagger.annotations.ApiModelProperty;
 @Validated
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2021-12-20T15:31:39.272-05:00")
 
+@Entity
+@Table(name = "pet")
 public class Pet {
-	@JsonProperty("id")
+
+	@Id
+	@GeneratedValue(
+		strategy = GenerationType.SEQUENCE,
+		generator = "pet_id_seq"
+	)
+	@SequenceGenerator(
+		name = "pet_id_seq",
+		sequenceName = "pet_id_seq",
+		allocationSize = 1
+	)
+	@Column(name = "id", nullable = false)
 	private Long id;
 
-	@JsonProperty("category")
+	@ManyToOne
+	@JoinColumn(name = "category_id", nullable = false)
 	private Category category;
 
-	@JsonProperty("name")
+	@Column(name = "name", nullable = false)
 	private String name;
 
-	@JsonProperty("photoURL")
 	@Valid
+	@Column(name = "photoURL", nullable = false)
 	private String photoURL;
 
-	@JsonProperty("tags")
 	@Valid
-	private List<Tag> tags = null;
+	@ManyToMany
+	@JoinTable(
+		name = "pet_tag",
+		joinColumns = @JoinColumn(
+			name = "pet_id",
+			nullable = false
+		),
+		inverseJoinColumns = @JoinColumn(
+			name = "tag_id",
+			nullable = false
+		)
+	)
+	private List<Tag> tags;
+
+	@Enumerated(EnumType.STRING)
+	@Column(name = "status", nullable = false)
+	private StatusEnum status;
 
 	/**
 	 * pet status in the store
@@ -75,9 +113,6 @@ public class Pet {
 			throw new IllegalArgumentException("Unexpected value '" + value + "'");
 		}
 	}
-
-	@JsonProperty("status")
-	private StatusEnum status;
 
 	public Pet id(Long id) {
 		this.id = id;

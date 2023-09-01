@@ -25,7 +25,8 @@
         <jackson.datatype.version>2.6.4</jackson.datatype.version>
         <junit.version>4.13.2</junit.version>
         <jaxb.version>2.4.0-b180830.0359</jaxb.version>
-        <postgresql.version>42.5.4</postgresql.version>
+        <postgresql.version>42.6.0</postgresql.version>
+        <flyway.version>9.18.0</flyway.version>
         <org.mapstruct.version>1.5.3.Final</org.mapstruct.version>
         <lombock.version>1.18.24</lombock.version>
     </properties>
@@ -79,16 +80,21 @@
             <artifactId>jaxb-api</artifactId>
             <version>${jaxb.version}</version>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.boot</groupId>-->
-<!--            <artifactId>spring-boot-starter-data-jpa</artifactId>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>org.postgresql</groupId>-->
-<!--            <artifactId>postgresql</artifactId>-->
-<!--            <version>${postgresql.version}</version>-->
-<!--            <scope>runtime</scope>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${postgresql.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+            <version>${flyway.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>

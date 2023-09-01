@@ -1,13 +1,16 @@
 package com.chtrembl.petstore.pet.model;
 
-import java.util.Objects;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import org.springframework.validation.annotation.Validated;
-import javax.validation.Valid;
-import javax.validation.constraints.*;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import java.util.Objects;
 
 /**
  * Tag
@@ -15,12 +18,25 @@ import javax.validation.constraints.*;
 @Validated
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2021-12-20T15:31:39.272-05:00")
 
-public class Tag   {
-  @JsonProperty("id")
-  private Long id = null;
+@Entity
+@Table(name = "tag")
+public class Tag {
 
-  @JsonProperty("name")
-  private String name = null;
+  @Id
+  @GeneratedValue(
+      strategy = GenerationType.SEQUENCE,
+      generator = "tag_id_seq"
+  )
+  @SequenceGenerator(
+      name = "tag_id_seq",
+      sequenceName = "tag_id_seq",
+      allocationSize = 1
+  )
+  @Column(name = "id", nullable = false)
+  private Long id;
+
+  @Column(name = "name", nullable = false)
+  private String name;
 
   public Tag id(Long id) {
     this.id = id;
@@ -85,7 +101,7 @@ public class Tag   {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Tag {\n");
-    
+
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
     sb.append("    name: ").append(toIndentedString(name)).append("\n");
     sb.append("}");

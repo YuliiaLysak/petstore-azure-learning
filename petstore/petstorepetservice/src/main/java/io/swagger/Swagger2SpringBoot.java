@@ -1,30 +1,24 @@
 package io.swagger;
 
+import com.chtrembl.petstore.pet.model.ContainerEnvironment;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.ExitCodeGenerator;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
-
-import com.chtrembl.petstore.pet.model.ContainerEnvironment;
-import com.chtrembl.petstore.pet.model.DataPreload;
-
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @SpringBootApplication
 @EnableSwagger2
+@EntityScan("com.chtrembl.petstore.pet.model")
 @ComponentScan(basePackages = { "io.swagger", "com.chtrembl.petstore.pet.api", "io.swagger.configuration" })
 public class Swagger2SpringBoot implements CommandLineRunner {
 
 	@Bean
 	public ContainerEnvironment containerEnvvironment() {
 		return new ContainerEnvironment();
-	}
-
-	@Bean
-	public DataPreload dataPreload() {
-		return new DataPreload();
 	}
 
 	@Override
