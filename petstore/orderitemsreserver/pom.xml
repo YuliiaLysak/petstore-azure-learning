@@ -28,11 +28,12 @@
         <spring-cloud-azure-dependencies.version>5.4.0</spring-cloud-azure-dependencies.version>
 
         <start-class>com.chtrembl.orderitemsreserver.FunctionApplication</start-class>
-        <functionAppName>petstore-reserve-order-items</functionAppName>
+        <functionAppName>petstore-reserve-order-items-1</functionAppName>
         <functionAppRegion>eastus</functionAppRegion>
         <functionResourceGroup>learn-azure-temporal</functionResourceGroup>
         <functionAppServicePlanName>learn-azure-function-plan</functionAppServicePlanName>
         <functionPricingTier>EP1</functionPricingTier>
+        <appInsights>petstore-app-insights</appInsights>
     </properties>
 
     <dependencies>
@@ -110,6 +111,7 @@
                     <resourceGroup>${functionResourceGroup}</resourceGroup>
                     <region>${functionAppRegion}</region>
                     <appServicePlanName>${functionAppServicePlanName}</appServicePlanName>
+                    <appInsightsInstance>${appInsights}</appInsightsInstance>
                     <pricingTier>${functionPricingTier}</pricingTier>
 
                     <hostJson>${project.basedir}/src/main/resources/host.json</hostJson>

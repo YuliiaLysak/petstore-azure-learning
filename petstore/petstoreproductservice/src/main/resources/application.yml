@@ -13,6 +13,18 @@ spring:
     pathmatch:
       matching-strategy: ant_path_matcher
 
+  datasource:
+    url: ${PRODUCT_DB_URI}
+    username: ${PRODUCT_DB_USERNAME}
+    password: ${PRODUCT_DB_PASSWORD}
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
 management:
   endpoints:
     web:
