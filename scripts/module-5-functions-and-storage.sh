@@ -48,5 +48,8 @@ FUNCTION_SYSTEM_ASSIGNED_IDENTITY_ID=#<replace-me> # TODO replace with Function 
 create_resource_group_temporal
 create_blob_storage_account
 create_storage_container
+
+# TODO: Add values to environment variables
+
 assign_role_for_blob_storage_access my-email@email.com
 assign_role_for_blob_storage_access $FUNCTION_SYSTEM_ASSIGNED_IDENTITY_ID
