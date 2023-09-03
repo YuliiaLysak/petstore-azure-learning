@@ -11,7 +11,7 @@ create_resource_group_temporal() {
 create_blob_storage_account() {
   az storage account create \
     --kind StorageV2 \
-    --resource-group $RESOURCE_GROUP_TEMP \
+    --resource-group $1 \
     --location $REGION_US \
     --name $BLOB_STORAGE_NAME \
     --output none
@@ -30,11 +30,12 @@ create_storage_container() {
 assign_role_for_blob_storage_access() {
   az role assignment create \
       --role "Storage Blob Data Contributor" \
-      --assignee $1 \
-      --scope "/subscriptions/$SUBSCRIPTION/resourceGroups/$RESOURCE_GROUP_TEMP/providers/Microsoft.Storage/storageAccounts/$BLOB_STORAGE_NAME/blobServices/default/containers/$BLOB_STORAGE_CONTAINER_NAME"
+      --assignee $2 \
+      --scope "/subscriptions/$SUBSCRIPTION/resourceGroups/$1/providers/Microsoft.Storage/storageAccounts/$BLOB_STORAGE_NAME/blobServices/default/containers/$BLOB_STORAGE_CONTAINER_NAME"
 }
 
 RESOURCE_GROUP_TEMP=learn-azure-temporal
+RESOURCE_GROUP_PERM=learn-azure-permanent
 REGION_US=eastus
 
 BLOB_STORAGE_NAME=petstorestorage
@@ -46,10 +47,10 @@ SUBSCRIPTION=#<replace-me> # TODO replace with subscription id
 FUNCTION_SYSTEM_ASSIGNED_IDENTITY_ID=#<replace-me> # TODO replace with Function System Assigned id
 
 create_resource_group_temporal
-create_blob_storage_account
+create_blob_storage_account $RESOURCE_GROUP_PERM
 create_storage_container
 
 # TODO: Add values to environment variables
 
-assign_role_for_blob_storage_access my-email@email.com
-assign_role_for_blob_storage_access $FUNCTION_SYSTEM_ASSIGNED_IDENTITY_ID
+assign_role_for_blob_storage_access $RESOURCE_GROUP_PERM my-email@email.com
+assign_role_for_blob_storage_access $RESOURCE_GROUP_PERM $FUNCTION_SYSTEM_ASSIGNED_IDENTITY_ID

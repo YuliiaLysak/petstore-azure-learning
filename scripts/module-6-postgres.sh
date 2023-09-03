@@ -11,7 +11,7 @@ create_resource_group_temporal() {
 create_postgres_server() {
   az postgres server create \
     --name $POSTGRES_SERVER_NAME \
-    --resource-group $RESOURCE_GROUP_TEMP \
+    --resource-group $1 \
     --location $REGION_US \
     --admin-user $POSTGRES_USER \
     --admin-password $POSTGRES_PASSWORD \
@@ -21,7 +21,7 @@ create_postgres_server() {
 
 create_postgres_server_firewall_rule() {
   az postgres server firewall-rule create \
-    --resource-group $RESOURCE_GROUP_TEMP \
+    --resource-group $1 \
     --server $POSTGRES_SERVER_NAME \
     --name $FIREWALL_NAME \
     --start-ip-address 0.0.0.0 \
@@ -52,6 +52,7 @@ psql_connect_to_postgres_server() {
 
 
 RESOURCE_GROUP_TEMP=learn-azure-temporal
+RESOURCE_GROUP_PERM=learn-azure-permanent
 REGION_US=eastus
 
 POSTGRES_SERVER_NAME=petstore-postgres-server
@@ -61,5 +62,5 @@ FIREWALL_NAME=AllowIps
 
 
 create_resource_group_temporal
-create_postgres_server
-create_postgres_server_firewall_rule
+create_postgres_server $RESOURCE_GROUP_PERM
+create_postgres_server_firewall_rule $RESOURCE_GROUP_PERM

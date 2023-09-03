@@ -148,24 +148,21 @@ PETSTOREORDERSERVICE_URL="https://petstore-order-service.azurewebsites.net"
 PETSTORE_ORDER_ITEMS_RESERVER_URL="https://petstore-reserve-order-items-1.azurewebsites.net"
 
 APP_INSIGHTS=petstore-app-insights
-APP_INSIGHTS_CONNECTION_STRING=#<replace-me> # TODO replace after App Insights creation
+APP_INSIGHTS_CONNECTION_STRING='@Microsoft.KeyVault(VaultName=petstore-key-vault;SecretName=app-insights-connection)'
 
 # databases: 'petstore_pet_db' and 'petstore_product_db'
-PET_DB_URI=#<replace-me> # TODO replace after PostgreSQL database creation
-PRODUCT_DB_URI=#<replace-me> # TODO replace after PostgreSQL database creation
-POSTGRES_USER=#<replace-me> # TODO replace after PostgreSQL server creation
-POSTGRES_PASSWORD=#<replace-me> # TODO replace after PostgreSQL server creation
+PET_DB_URI='@Microsoft.KeyVault(VaultName=petstore-key-vault;SecretName=pet-db-uri)'
+PRODUCT_DB_URI='@Microsoft.KeyVault(VaultName=petstore-key-vault;SecretName=product-db-uri)'
+POSTGRES_USER='@Microsoft.KeyVault(VaultName=petstore-key-vault;SecretName=postgres-user)'
+POSTGRES_PASSWORD='@Microsoft.KeyVault(VaultName=petstore-key-vault;SecretName=postgres-password)'
 
-COSMOS_DB_ENDPOINT=#<replace-me> # TODO replace after Cosmos DB account creation
-COSMOS_DB_KEY=#<replace-me> # TODO replace after Cosmos DB account creation
-COSMOS_DB_DATABASE=petstore-order-cache
+COSMOS_DB_ENDPOINT='@Microsoft.KeyVault(VaultName=petstore-key-vault;SecretName=cosmos-db-endpoint)'
+COSMOS_DB_KEY='@Microsoft.KeyVault(VaultName=petstore-key-vault;SecretName=cosmos-db-key)'
+COSMOS_DB_DATABASE=petstore-orders-cache
 
 create_resource_group_temporal
 create_app_insights
 create_app_service_plan
-
-# TODO: Add values to environment variables
-
 create_web_apps
 add_env_variables_to_web_apps
 restart_web_apps
