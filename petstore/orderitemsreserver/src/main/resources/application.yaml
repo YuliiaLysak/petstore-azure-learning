@@ -11,3 +11,10 @@ spring:
         blob:
           account-name: ${AZURE_STORAGE_ACCOUNT:petstorestorage}
           container-name: ${STORAGE_CONTAINER_NAME:reserved-order-items}
+          retry:
+            fixed:
+              max-retries: 3
+      servicebus:
+        namespace: petstore-orders
+        entity-name: reserved-order-items
+        entity-type: queue

@@ -24,6 +24,10 @@ spring:
         endpoint: ${COSMOS_DB_ENDPOINT}
         key: ${COSMOS_DB_KEY}
         database: ${COSMOS_DB_DATABASE}
+      servicebus:
+        namespace: ${SERVICE_BUS_NAMESPACE_NAME}
+        entity-name: ${SERVICE_BUS_QUEUE_NAME}
+        entity-type: queue
 
 management:
   endpoints:

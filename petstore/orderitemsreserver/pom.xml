@@ -32,7 +32,7 @@
         <functionAppRegion>eastus</functionAppRegion>
         <functionResourceGroup>learn-azure-temporal</functionResourceGroup>
         <functionAppServicePlanName>learn-azure-function-plan</functionAppServicePlanName>
-        <functionPricingTier>EP1</functionPricingTier>
+        <functionPricingTier>B1</functionPricingTier>
         <appInsights>petstore-app-insights</appInsights>
     </properties>
 
