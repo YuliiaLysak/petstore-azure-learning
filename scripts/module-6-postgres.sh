@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+source 00-variables.sh
+
 create_resource_group_temporal() {
     az group create \
       --name $RESOURCE_GROUP_TEMP \
@@ -13,10 +15,12 @@ create_postgres_server() {
     --name $POSTGRES_SERVER_NAME \
     --resource-group $1 \
     --location $REGION_US \
-    --admin-user $POSTGRES_USER \
-    --admin-password $POSTGRES_PASSWORD \
-    --backup-retention 30 \
-    --sku-name GP_Gen5_2
+    --admin-user $POSTGRES_USER_VALUE \
+    --admin-password $POSTGRES_PASSWORD_VALUE \
+    --sku-name B_Gen5_1
+#    --sku-name GP_Gen5_2
+#    --backup-retention 30 \
+#    todo: try another sku - look for basic B_Gen5_1 ??
 }
 
 create_postgres_server_firewall_rule() {
@@ -50,17 +54,9 @@ psql_connect_to_postgres_server() {
    \q
 }
 
-
-RESOURCE_GROUP_TEMP=learn-azure-temporal
-RESOURCE_GROUP_PERM=learn-azure-permanent
-REGION_US=eastus
-
-POSTGRES_SERVER_NAME=petstore-postgres-server
-POSTGRES_USER=#<replace-me> # TODO replace
-POSTGRES_PASSWORD=#<replace-me> # TODO replace
-FIREWALL_NAME=AllowIps
-
-
 create_resource_group_temporal
-create_postgres_server $RESOURCE_GROUP_PERM
-create_postgres_server_firewall_rule $RESOURCE_GROUP_PERM
+create_postgres_server $RESOURCE_GROUP_TEMP
+create_postgres_server_firewall_rule $RESOURCE_GROUP_TEMP
+
+# TODO: create databases inside postges server (e.g. via Intellij IDEA Database)
+# TODO: save secrets in key vault
