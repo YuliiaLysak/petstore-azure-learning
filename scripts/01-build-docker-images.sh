@@ -2,6 +2,16 @@
 
 source 00-variables.sh
 
+create_container_registry() {
+  az acr create \
+    --name $CONTAINER_REGISTRY \
+    --resource-group $1 \
+    --sku Basic \
+    --admin-enabled true
+  echo "Created container registry $CONTAINER_REGISTRY"
+  az acr login --name $CONTAINER_REGISTRY
+}
+
 build_docker_pet() {
 #   TODO: replace with valid path
   cd ~/petstore/petstorepetservice
@@ -26,6 +36,7 @@ build_docker_main_app() {
   az acr build --registry $CONTAINER_REGISTRY --image $MAIN_WEB_APP:$1 .
 }
 
+create_container_registry $RESOURCE_GROUP_PERM
 build_docker_pet
 build_docker_product
 build_docker_order

@@ -2,14 +2,6 @@
 
 source 00-variables.sh
 
-create_resource_group_temporal() {
-    az group create \
-      --name $RESOURCE_GROUP_TEMP \
-      --location $REGION_US \
-      --output none
-    echo "Created resource group $RESOURCE_GROUP_TEMP"
-}
-
 create_postgres_server() {
   az postgres server create \
     --name $POSTGRES_SERVER_NAME \
@@ -54,9 +46,5 @@ psql_connect_to_postgres_server() {
    \q
 }
 
-create_resource_group_temporal
 create_postgres_server $RESOURCE_GROUP_TEMP
 create_postgres_server_firewall_rule $RESOURCE_GROUP_TEMP
-
-# TODO: create databases inside postges server (e.g. via Intellij IDEA Database)
-# TODO: save secrets in key vault

@@ -2,14 +2,6 @@
 
 source 00-variables.sh
 
-create_resource_group_temporal() {
-    az group create \
-      --name $RESOURCE_GROUP_TEMP \
-      --location $REGION_US \
-      --output none
-    echo "Created resource group $RESOURCE_GROUP_TEMP"
-}
-
 create_service_bus_namespace() {
   az servicebus namespace create \
     --resource-group $1 \
@@ -26,14 +18,6 @@ create_service_bus_queue() {
     --resource-group $1
 }
 
-#create_logic_app() {
-#  az logicapp create \
-#    --name myLogicApp \
-#    --resource-group $1 \
-#    --storage-account myStorageAccount \
-#    -p MyPlan
-#}
-
 get_service_bus_connection_string() {
   az servicebus namespace authorization-rule keys list \
       --resource-group $1 \
@@ -45,7 +29,6 @@ get_service_bus_connection_string() {
 #Endpoint=sb://salesteamappcontoso666.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=++zaYLTgHXH5i1Alx/Og3tKlncv9m0uTZ+ASbCbZrco=
 }
 
-create_resource_group_temporal
 create_service_bus_namespace $RESOURCE_GROUP_TEMP
 create_service_bus_queue $RESOURCE_GROUP_TEMP
 get_service_bus_connection_string $RESOURCE_GROUP_TEMP

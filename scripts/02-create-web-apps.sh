@@ -2,14 +2,6 @@
 
 source 00-variables.sh
 
-create_resource_group_temporal() {
-    az group create \
-      --name $RESOURCE_GROUP_TEMP \
-      --location $REGION_US \
-      --output none
-    echo "Created resource group $RESOURCE_GROUP_TEMP"
-}
-
 create_app_service_plan() {
   az appservice plan create \
     --name $APP_PLAN_US \
@@ -17,13 +9,6 @@ create_app_service_plan() {
     --location $REGION_US \
     --is-linux \
     --sku S1
-}
-
-create_app_insights() {
-  az monitor app-insights component create \
-    --resource-group $RESOURCE_GROUP_TEMP \
-    --app $APP_INSIGHTS \
-    --location $REGION_US
 }
 
 create_web_apps() {
@@ -54,6 +39,28 @@ create_web_apps() {
       --name $MAIN_WEB_APP \
       --deployment-container-image-name $CONTAINER_REGISTRY.azurecr.io/$MAIN_WEB_APP:latest \
       --output none
+}
+
+enable_system_identity_on_web_apps() {
+  az webapp identity assign \
+    --resource-group $RESOURCE_GROUP_TEMP \
+    --name $BE_WEB_APP_PET
+  echo "Enabled systemAssigned identity for $BE_WEB_APP_PET"
+
+  az webapp identity assign \
+    --resource-group $RESOURCE_GROUP_TEMP \
+    --name $BE_WEB_APP_PRODUCT
+  echo "Enabled systemAssigned identity for $BE_WEB_APP_PRODUCT"
+
+  az webapp identity assign \
+    --resource-group $RESOURCE_GROUP_TEMP \
+    --name $BE_WEB_APP_ORDER
+  echo "Enabled systemAssigned identity for $BE_WEB_APP_ORDER"
+
+  az webapp identity assign \
+    --resource-group $RESOURCE_GROUP_TEMP \
+    --name $MAIN_WEB_APP
+  echo "Enabled systemAssigned identity for $MAIN_WEB_APP"
 }
 
 add_env_variables_to_web_apps() {
@@ -133,10 +140,9 @@ enable_main_app_container_ci_cd() {
     --resource-group $RESOURCE_GROUP_TEMP
 }
 
-create_resource_group_temporal
-create_app_insights
 create_app_service_plan
 create_web_apps
+enable_system_identity_on_web_apps
 add_env_variables_to_web_apps
 restart_web_apps
 

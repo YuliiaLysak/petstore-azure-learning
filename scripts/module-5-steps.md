@@ -1,7 +1,7 @@
 # Steps
 
 ## Prepare blob storage
-Create Storage Account and Container in it - see [module-5-functions-and-storage.sh](./module-5-functions-and-storage.sh)
+Create Storage Account and Container in it - see [module-5-function-app.sh](./module-5-function-app.sh)
 
 ## Create Function App - petstore/orderitemsreserver
 - Build and run Function locally
@@ -23,7 +23,7 @@ Tutorial - [Access Blob Storage from Function App](https://learn.microsoft.com/e
 
 
 ## Grant roles to Function
-Grant `Storage Blob Data Contributor` role to the Function by identity id - see [module-5-functions-and-storage.sh](./module-5-functions-and-storage.sh)
+Grant `Storage Blob Data Contributor` role to the Function by identity id - see [module-5-function-app.sh](./module-5-function-app.sh)
 
 
 ## Update main web app
