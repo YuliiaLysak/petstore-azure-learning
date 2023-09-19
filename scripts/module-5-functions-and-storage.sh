@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+source 00-variables.sh
+
 create_resource_group_temporal() {
     az group create \
       --name $RESOURCE_GROUP_TEMP \
@@ -27,6 +29,12 @@ create_storage_container() {
 #      --auth-mode login
 }
 
+enable_function_system_assigned_identity() {
+  az functionapp identity assign \
+      --resource-group $1 \
+      --name $FUNCTION_APP_NAME
+}
+
 assign_role_for_blob_storage_access() {
   az role assignment create \
       --role "Storage Blob Data Contributor" \
@@ -34,23 +42,25 @@ assign_role_for_blob_storage_access() {
       --scope "/subscriptions/$SUBSCRIPTION/resourceGroups/$1/providers/Microsoft.Storage/storageAccounts/$BLOB_STORAGE_NAME/blobServices/default/containers/$BLOB_STORAGE_CONTAINER_NAME"
 }
 
-RESOURCE_GROUP_TEMP=learn-azure-temporal
-RESOURCE_GROUP_PERM=learn-azure-permanent
-REGION_US=eastus
-
-BLOB_STORAGE_NAME=petstorestorage
-BLOB_STORAGE_CONTAINER_NAME=reserved-order-items
-
-FUNCTION_APP_PLAN_US=learn-azure-function-plan
-
-SUBSCRIPTION=#<replace-me> # TODO replace with subscription id
-FUNCTION_SYSTEM_ASSIGNED_IDENTITY_ID=#<replace-me> # TODO replace with Function System Assigned id
+assign_role_for_service_bus_access() {
+  az role assignment create \
+      --role "Azure Service Bus Data Owner" \
+      --assignee $2 \
+      --scope "/subscriptions/$SUBSCRIPTION/resourceGroups/$1/providers/Microsoft.ServiceBus/namespaces/$SERVICE_BUS_NAMESPACE_NAME/queues/$SERVICE_BUS_QUEUE_NAME"
+}
 
 create_resource_group_temporal
 create_blob_storage_account $RESOURCE_GROUP_PERM
 create_storage_container
 
-# TODO: Add values to environment variables
+enable_function_system_assigned_identity $RESOURCE_GROUP_TEMP
+
+# TODO: Add 'AzureWebJobsServiceBus' to function app settings
+
+
+# TODO: Add values in 00-variables.sh
 
 assign_role_for_blob_storage_access $RESOURCE_GROUP_PERM my-email@email.com
 assign_role_for_blob_storage_access $RESOURCE_GROUP_PERM $FUNCTION_SYSTEM_ASSIGNED_IDENTITY_ID
+assign_role_for_service_bus_access $RESOURCE_GROUP_TEMP $FUNCTION_SYSTEM_ASSIGNED_IDENTITY_ID
+assign_role_for_service_bus_access $RESOURCE_GROUP_TEMP $BE_WEB_APP_ORDER_PRINCIPAL_ID

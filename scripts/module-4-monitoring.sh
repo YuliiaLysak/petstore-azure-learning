@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+source 00-variables.sh
+
 create_resource_group_temporal() {
     az group create \
       --name $RESOURCE_GROUP_TEMP \
@@ -68,16 +70,16 @@ add_env_variables_to_web_apps() {
     --name $BE_WEB_APP_ORDER \
     --resource-group $RESOURCE_GROUP_TEMP \
     --settings APPLICATIONINSIGHTS_CONNECTION_STRING=$APP_INSIGHTS_CONNECTION_STRING \
-    PETSTOREPRODUCTSERVICE_URL="https://petstore-product-service.azurewebsites.net" \
+    PETSTOREPRODUCTSERVICE_URL=$PETSTOREPRODUCTSERVICE_URL \
     --output none
 
   az webapp config appsettings set \
     --name $MAIN_WEB_APP \
     --resource-group $RESOURCE_GROUP_TEMP \
     --settings APPLICATIONINSIGHTS_CONNECTION_STRING=$APP_INSIGHTS_CONNECTION_STRING \
-    PETSTOREPETSERVICE_URL="https://petstore-pet-service.azurewebsites.net" \
-    PETSTOREPRODUCTSERVICE_URL="https://petstore-product-service.azurewebsites.net" \
-    PETSTOREORDERSERVICE_URL="https://petstore-order-service.azurewebsites.net" \
+    PETSTOREPETSERVICE_URL=$PETSTOREPETSERVICE_URL \
+    PETSTOREPRODUCTSERVICE_URL=$PETSTOREPRODUCTSERVICE_URL \
+    PETSTOREORDERSERVICE_URL=$PETSTOREORDERSERVICE_URL \
     --output none
 }
 
@@ -109,19 +111,6 @@ change_web_app_container() {
     --name $MAIN_WEB_APP \
     --resource-group $RESOURCE_GROUP_TEMP
 }
-
-RESOURCE_GROUP_TEMP=learn-azure-temporal
-REGION_US=eastus
-APP_PLAN_US=ASP-learnazure-a949
-MAIN_WEB_APP=petstore-app
-BE_WEB_APP_PET=petstore-pet-service
-BE_WEB_APP_PRODUCT=petstore-product-service
-BE_WEB_APP_ORDER=petstore-order-service
-CONTAINER_REGISTRY=amazingregistry
-APP_INSIGHTS=petstore-app-insights
-
-APP_INSIGHTS_CONNECTION_STRING=#<replace-me> # TODO replace after App Insights creation
-
 
 #create_resource_group_temporal
 #create_app_service_plan

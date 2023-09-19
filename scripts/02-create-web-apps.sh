@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+source 00-variables.sh
+
 create_resource_group_temporal() {
     az group create \
       --name $RESOURCE_GROUP_TEMP \
@@ -80,6 +82,8 @@ add_env_variables_to_web_apps() {
     COSMOS_DB_ENDPOINT=$COSMOS_DB_ENDPOINT \
     COSMOS_DB_KEY=$COSMOS_DB_KEY \
     COSMOS_DB_DATABASE=$COSMOS_DB_DATABASE \
+    SERVICE_BUS_NAMESPACE_NAME=$SERVICE_BUS_NAMESPACE_NAME \
+    SERVICE_BUS_QUEUE_NAME=$SERVICE_BUS_QUEUE_NAME \
     APPLICATIONINSIGHTS_CONNECTION_STRING=$APP_INSIGHTS_CONNECTION_STRING \
     --output none
 
@@ -89,7 +93,6 @@ add_env_variables_to_web_apps() {
     --settings PETSTOREPETSERVICE_URL=$PETSTOREPETSERVICE_URL \
     PETSTOREPRODUCTSERVICE_URL=$PETSTOREPRODUCTSERVICE_URL \
     PETSTOREORDERSERVICE_URL=$PETSTOREORDERSERVICE_URL \
-    PETSTORE_ORDER_ITEMS_RESERVER_URL=$PETSTORE_ORDER_ITEMS_RESERVER_URL \
     APPLICATIONINSIGHTS_CONNECTION_STRING=$APP_INSIGHTS_CONNECTION_STRING \
     --output none
 }
@@ -129,36 +132,6 @@ enable_main_app_container_ci_cd() {
     --name $MAIN_WEB_APP \
     --resource-group $RESOURCE_GROUP_TEMP
 }
-
-
-RESOURCE_GROUP_TEMP=learn-azure-temporal
-REGION_US=eastus
-APP_PLAN_US=learn-azure-webapp-plan
-
-MAIN_WEB_APP=petstore-app
-BE_WEB_APP_PET=petstore-pet-service
-BE_WEB_APP_PRODUCT=petstore-product-service
-BE_WEB_APP_ORDER=petstore-order-service
-
-CONTAINER_REGISTRY=amazingregistry
-
-PETSTOREPETSERVICE_URL="https://petstore-pet-service.azurewebsites.net"
-PETSTOREPRODUCTSERVICE_URL="https://petstore-product-service.azurewebsites.net"
-PETSTOREORDERSERVICE_URL="https://petstore-order-service.azurewebsites.net"
-PETSTORE_ORDER_ITEMS_RESERVER_URL="https://petstore-reserve-order-items-1.azurewebsites.net"
-
-APP_INSIGHTS=petstore-app-insights
-APP_INSIGHTS_CONNECTION_STRING='@Microsoft.KeyVault(VaultName=petstore-key-vault;SecretName=app-insights-connection)'
-
-# databases: 'petstore_pet_db' and 'petstore_product_db'
-PET_DB_URI='@Microsoft.KeyVault(VaultName=petstore-key-vault;SecretName=pet-db-uri)'
-PRODUCT_DB_URI='@Microsoft.KeyVault(VaultName=petstore-key-vault;SecretName=product-db-uri)'
-POSTGRES_USER='@Microsoft.KeyVault(VaultName=petstore-key-vault;SecretName=postgres-user)'
-POSTGRES_PASSWORD='@Microsoft.KeyVault(VaultName=petstore-key-vault;SecretName=postgres-password)'
-
-COSMOS_DB_ENDPOINT='@Microsoft.KeyVault(VaultName=petstore-key-vault;SecretName=cosmos-db-endpoint)'
-COSMOS_DB_KEY='@Microsoft.KeyVault(VaultName=petstore-key-vault;SecretName=cosmos-db-key)'
-COSMOS_DB_DATABASE=petstore-orders-cache
 
 create_resource_group_temporal
 create_app_insights

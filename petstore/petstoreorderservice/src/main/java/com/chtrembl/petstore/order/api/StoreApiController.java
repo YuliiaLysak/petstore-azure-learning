@@ -1,5 +1,6 @@
 package com.chtrembl.petstore.order.api;
 
+import com.azure.spring.messaging.servicebus.core.ServiceBusTemplate;
 import com.chtrembl.petstore.order.model.ContainerEnvironment;
 import com.chtrembl.petstore.order.model.Order;
 import com.chtrembl.petstore.order.model.Product;
@@ -11,9 +12,11 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -41,6 +44,10 @@ public class StoreApiController implements StoreApi {
 
 	private final NativeWebRequest request;
 
+	private final String queueName;
+
+	private final ServiceBusTemplate serviceBusTemplate;
+
 	@Autowired
 	@Qualifier(value = "cacheManager")
 	private CacheManager cacheManager;
@@ -60,9 +67,16 @@ public class StoreApiController implements StoreApi {
 	}
 
 	@org.springframework.beans.factory.annotation.Autowired
-	public StoreApiController(ObjectMapper objectMapper, NativeWebRequest request) {
+	public StoreApiController(
+		ObjectMapper objectMapper,
+		NativeWebRequest request,
+		ServiceBusTemplate serviceBusTemplate,
+		@Value("${spring.cloud.azure.servicebus.entity-name}") String queueName
+	) {
 		this.objectMapper = objectMapper;
 		this.request = request;
+		this.serviceBusTemplate = serviceBusTemplate;
+		this.queueName = queueName;
 	}
 
 	// should really be in an interceptor
@@ -169,6 +183,9 @@ public class StoreApiController implements StoreApi {
 				Order order = this.storeApiCache.getOrder(body.getId());
 				orderService.save(order);
 				String orderJSON = new ObjectMapper().writeValueAsString(order);
+
+				serviceBusTemplate.sendAsync(queueName, MessageBuilder.withPayload(order).build()).subscribe();
+				log.info("Sent order to the ServiceBus queue");
 
 				ApiUtil.setResponse(request, "application/json", orderJSON);
 				return new ResponseEntity<>(HttpStatus.OK);

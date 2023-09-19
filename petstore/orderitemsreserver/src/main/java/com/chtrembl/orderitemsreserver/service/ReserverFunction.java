@@ -16,7 +16,7 @@ import java.util.function.Function;
 
 @Slf4j
 @Component
-public class ReserverFunction implements Function<Order, Response> {
+public class ReserverFunction implements Function<String, Response> {
     private static final String BLOB_RESOURCE_PATTERN = "azure-blob://%s/%s";
 
     private final String containerName;
@@ -34,9 +34,10 @@ public class ReserverFunction implements Function<Order, Response> {
     }
 
     @Override
-    public Response apply(Order order) {
+    public Response apply(String orderMessage) {
         try {
-            upload(order.getId(), objectMapper.writeValueAsString(order));
+            Order order = objectMapper.readValue(orderMessage, Order.class);
+            upload(order.getId(), orderMessage);
             return new Response("Order items reserved and saved into Blob Storage");
         } catch (IOException e) {
             throw new RuntimeException(e);
