@@ -43,6 +43,9 @@ add_secret_to_key_vault postgres-password $POSTGRES_PASSWORD_SECRET
 add_secret_to_key_vault cosmos-db-endpoint $COSMOS_DB_ENDPOINT_SECRET
 add_secret_to_key_vault cosmos-db-key $COSMOS_DB_KEY_SECRET
 
+add_secret_to_key_vault ad-b2c-client-id $AD_B2C_CLIENT_ID_VALUE
+add_secret_to_key_vault ad-b2c-client-secret $AD_B2C_CLIENT_SECRET_VALUE
+
 key_vault_set_policy_for_identity $BE_WEB_APP_PET_PRINCIPAL_ID
 key_vault_set_policy_for_identity $BE_WEB_APP_PRODUCT_PRINCIPAL_ID
 key_vault_set_policy_for_identity $BE_WEB_APP_ORDER_PRINCIPAL_ID

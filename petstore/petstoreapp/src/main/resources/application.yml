@@ -39,3 +39,20 @@ spring:
     cache: false
   cache:
     cache-names: currentUsers
+
+  cloud:
+    azure:
+      active-directory:
+        b2c:
+          enabled: true
+          base-uri: https://testorg6666.b2clogin.com/testorg6666.onmicrosoft.com/
+          credential:
+            client-id: ${AD_B2C_CLIENT_ID}
+            client-secret: ${AD_B2C_CLIENT_SECRET}
+          login-flow: sign-up-or-sign-in
+          logout-success-url: ${PETSTOREAPP_URL:http://localhost:8080}
+          user-flows:
+            sign-up-or-sign-in: "B2C_1_petstore_signup_signin"
+            profile-edit: "B2C_1_petstore_profile_editing"
+            password-reset: "B2C_1_petstore_password_reset"
+          user-name-attribute-name: name
