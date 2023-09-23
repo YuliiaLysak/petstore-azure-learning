@@ -23,7 +23,7 @@ BE_WEB_APP_PRODUCT_PRINCIPAL_ID='replace-me'
 PETSTOREPETSERVICE_URL="https://petstore-pet-service.azurewebsites.net"
 PETSTOREPRODUCTSERVICE_URL="https://petstore-product-service.azurewebsites.net"
 PETSTOREORDERSERVICE_URL="https://petstore-order-service.azurewebsites.net"
-
+PETSTOREAPP_URL="https://petstore-app.azurewebsites.net"
 
 # Key Vault
 KEY_VAULT_NAME=petstore-key-vault
@@ -82,3 +82,10 @@ FUNCTION_SYSTEM_ASSIGNED_IDENTITY_ID='replace-me'
 # Service Bus (queue)
 SERVICE_BUS_NAMESPACE_NAME=petstore-orders
 SERVICE_BUS_QUEUE_NAME=reserved-order-items
+
+
+# Active Directory B2C
+AD_B2C_CLIENT_ID_VALUE='replace-me'
+AD_B2C_CLIENT_ID='@Microsoft.KeyVault(VaultName=petstore-key-vault;SecretName=ad-b2c-client-id)'
+AD_B2C_CLIENT_SECRET_VALUE='replace-me'
+AD_B2C_CLIENT_SECRET='@Microsoft.KeyVault(VaultName=petstore-key-vault;SecretName=ad-b2c-client-secret)'
