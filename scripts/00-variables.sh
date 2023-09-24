@@ -3,12 +3,14 @@
 RESOURCE_GROUP_PERM=learn-azure-permanent
 RESOURCE_GROUP_TEMP=learn-azure-temporal
 REGION_US=eastus
+REGION_UK=uksouth
 CONTAINER_REGISTRY=amazingregistry
 SUBSCRIPTION='replace-me'
 
 
 # AppServices
-APP_PLAN_US=learn-azure-webapp-plan
+APP_PLAN_US=learn-azure-webapp-plan-us
+APP_PLAN_UK=learn-azure-webapp-plan-uk
 MAIN_WEB_APP=petstore-app
 BE_WEB_APP_PET=petstore-pet-service
 BE_WEB_APP_PRODUCT=petstore-product-service
@@ -23,7 +25,12 @@ BE_WEB_APP_PRODUCT_PRINCIPAL_ID='replace-me'
 PETSTOREPETSERVICE_URL="https://petstore-pet-service.azurewebsites.net"
 PETSTOREPRODUCTSERVICE_URL="https://petstore-product-service.azurewebsites.net"
 PETSTOREORDERSERVICE_URL="https://petstore-order-service.azurewebsites.net"
-PETSTOREAPP_URL="https://petstore-app.azurewebsites.net"
+PETSTOREAPP_URL="https://petstoretrafficmanagerprofile.trafficmanager.net"
+
+
+# Traffic Manager
+TRAFFIC_MANAGER_PROFILE=petstoretrafficmanagerprofile
+
 
 # Key Vault
 KEY_VAULT_NAME=petstore-key-vault

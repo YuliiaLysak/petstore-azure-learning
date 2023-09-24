@@ -1,0 +1,75 @@
+{
+  "definition": {
+    "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+    "actions": {
+      "Send_an_email_(V2)": {
+        "inputs": {
+          "body": {
+            "Body": "<p><span style=\"font-size: 16px\"><strong>Id:</strong></span><span style=\"font-size: 16px\"> </span><span style=\"font-size: 16px\">@{triggerBody()?['MessageId']}</span><span style=\"font-size: 16px\"><br>\n<br>\n</span><span style=\"font-size: 16px\"><strong>Content:</strong></span><span style=\"font-size: 16px\"> </span><span style=\"font-size: 16px\">@{base64ToString(triggerBody()?['ContentData'])}</span><span style=\"font-size: 16px\"></span><br>\n<br>\n<br>\n<span style=\"font-size: 16px\"><strong>Service Bus Message:</strong></span><span style=\"font-size: 16px\"> </span><span style=\"font-size: 16px\">@{triggerBody()}</span><span style=\"font-size: 16px\"></span></p>",
+            "Importance": "Normal",
+            "Subject": "Petstore order could not be reserved",
+            "To": "yuliia_lysak@epam.com"
+          },
+          "host": {
+            "connection": {
+              "name": "@parameters('$connections')['office365']['connectionId']"
+            }
+          },
+          "method": "post",
+          "path": "/v2/Mail"
+        },
+        "runAfter": {},
+        "type": "ApiConnection"
+      }
+    },
+    "contentVersion": "1.0.0.0",
+    "outputs": {},
+    "parameters": {
+      "$connections": {
+        "defaultValue": {},
+        "type": "Object"
+      }
+    },
+    "triggers": {
+      "When_a_message_is_received_in_a_queue_(auto-complete)": {
+        "evaluatedRecurrence": {
+          "frequency": "Minute",
+          "interval": 1
+        },
+        "inputs": {
+          "host": {
+            "connection": {
+              "name": "@parameters('$connections')['servicebus']['connectionId']"
+            }
+          },
+          "method": "get",
+          "path": "/@{encodeURIComponent(encodeURIComponent('reserved-order-items'))}/messages/head",
+          "queries": {
+            "queueType": "DeadLetter"
+          }
+        },
+        "recurrence": {
+          "frequency": "Minute",
+          "interval": 1
+        },
+        "type": "ApiConnection"
+      }
+    }
+  },
+  "parameters": {
+    "$connections": {
+      "value": {
+        "office365": {
+          "connectionId": "/subscriptions/eb5e0e2b-8eb0-4916-8d43-e416bab51646/resourceGroups/learn-azure-temporal/providers/Microsoft.Web/connections/office365",
+          "connectionName": "office365",
+          "id": "/subscriptions/eb5e0e2b-8eb0-4916-8d43-e416bab51646/providers/Microsoft.Web/locations/eastus/managedApis/office365"
+        },
+        "servicebus": {
+          "connectionId": "/subscriptions/eb5e0e2b-8eb0-4916-8d43-e416bab51646/resourceGroups/learn-azure-temporal/providers/Microsoft.Web/connections/servicebus",
+          "connectionName": "servicebus",
+          "id": "/subscriptions/eb5e0e2b-8eb0-4916-8d43-e416bab51646/providers/Microsoft.Web/locations/eastus/managedApis/servicebus"
+        }
+      }
+    }
+  }
+}

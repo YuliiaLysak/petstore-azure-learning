@@ -31,6 +31,16 @@ create_cosmos_db_database_container() {
   echo "Created Cosmos DB container $2 with partition-key $3"
 }
 
+get_cosmos_db_key() {
+  az cosmosdb keys list \
+    --name $COSMOS_DB_ACCOUNT_NAME \
+    --resource-group $1 \
+    --type keys \
+    --query primaryMasterKey \
+    --output tsv
+}
+
 create_cosmos_db_account $RESOURCE_GROUP_TEMP
 create_cosmos_db_database $RESOURCE_GROUP_TEMP
 create_cosmos_db_database_container $RESOURCE_GROUP_TEMP $COSMOS_DB_DATABASE_CONTAINER_NAME $COSMOS_DB_DATABASE_CONTAINER_PARTITION_KEY
+get_cosmos_db_key $RESOURCE_GROUP_TEMP
